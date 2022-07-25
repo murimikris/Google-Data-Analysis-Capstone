@@ -4,7 +4,7 @@ author: "Kristian Murimi"
 date: '2022-03-29'
 output: html_document
 ---
-##Install Packages
+## Install Packages
 ```{r packages}
 library(tidyverse)
 library(janitor)
