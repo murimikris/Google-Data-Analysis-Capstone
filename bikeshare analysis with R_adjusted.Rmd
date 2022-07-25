@@ -1,0 +1,133 @@
+---
+title: "Bikeshare Analysis with R"
+author: "Kristian Murimi"
+date: '2022-03-29'
+output: html_document
+---
+##Install Packages
+```{r packages}
+library(tidyverse)
+library(janitor)
+```
+
+
+##Import data
+
+```{r data}
+tripdata <- read.csv('trip_data.csv')
+```
+## Clean up data
+There is an unwanted column in the table.
+
+```{r clean up}
+
+trip_data <- tripdata[-c(1)]
+head(trip_data)
+
+```
+The unwanted column has been successfully removed
+
+## Summary data
+How many members and casual riders use the service throughout the year?
+
+```{r user distribution}
+
+user_distribution <- trip_data%>%
+  group_by(member_casual)%>%
+  summarise(n())
+names(user_distribution) <- c("user_type", "user_count")
+```
+
+How does bike preference differ between members and casual riders?
+```{r bike preference}
+
+bike_preference <- trip_data%>%
+  group_by(rideable_type, member_casual)%>%
+  summarise(n())
+names(bike_preference) <- c("bike_type", "user_type", "user_count")
+```
+
+What is the daily rider distribution?
+```{r weekly trips}
+weekly_trips <- trip_data%>%
+  group_by(trip_day, member_casual)%>%
+  summarise(n())
+names(weekly_trips) <- c("trip_day", "user_type", "user_count")
+
+weekly_trips$trip_day <- ordered(weekly_trips$trip_day, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", 
+                                                                   "Friday", "Saturday", "Sunday"))
+```
+
+
+What time of day do users prefer to ride bikes?
+```{r time of day}
+trip_time <- trip_data%>%
+  group_by(time_of_trip,member_casual)%>%
+  summarise(n())
+names(trip_time)<- c("time_of_trip","user_type", "user_count")
+```
+
+
+## Plotting the data
+###User distribution
+```{r user type plot}
+ggplot(user_distribution, aes(x =user_type, y = user_count, fill = user_type))+
+  geom_bar(stat = "identity")+
+  labs(title = "User Distribution")+
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+There are more members than casual riders.
+
+###Daily user distribution
+```{r users by day}
+
+ggplot(weekly_trips, aes(x = trip_day, y = user_count, fill = trip_day))+
+  geom_bar(stat = "identity")+
+  facet_wrap(~user_type)+
+  labs(title = "Daily Users")+
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        plot.title = element_text(hjust = 0.5))
+  
+```
+
+
+Most of the casual riders take trips on the weekends.This suggests that most casual riders use the bike service for leisure. Members of the ride share service, however, take more trips over the weekdays.This suggests that most of the members use the service for transport.
+
+
+
+###Bike preference
+```{r bike type plot}
+
+ggplot(bike_preference, aes(x=bike_type, y = user_count, fill = bike_type))+
+  geom_bar(stat = "identity")+
+  facet_wrap(~user_type)+
+  labs(title = "Bike Preferece")+
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        plot.title = element_text(hjust = 0.5))
+```
+
+
+
+This shows that the most used bike type is the classic bike, which is the preferred type by both members and casual riders.
+The least common bike type is the docked bike which is only used by a small number of casual riders and not at all by members.
+
+
+###Time of trip
+```{r trip time plot}
+ggplot(trip_time, aes(x= time_of_trip, y = user_count, fill = time_of_trip))+
+  geom_bar(stat ="identity")+
+  facet_wrap(~user_type)+
+  labs(title = "Time Preference")+
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+
+Most of the casual riders use the service in the afternoon suggesting that they use the service mostly for leisure.The member riders mostly ride in the afternoons and morning which may indicate they are using the service to get to and from work.
+
+
+
+
