@@ -11,7 +11,7 @@ library(janitor)
 ```
 
 
-##Import data
+## Import data
 
 ```{r data}
 tripdata <- read.csv('trip_data.csv')
@@ -69,7 +69,7 @@ names(trip_time)<- c("time_of_trip","user_type", "user_count")
 
 
 ## Plotting the data
-###User distribution
+### User distribution
 ```{r user type plot}
 ggplot(user_distribution, aes(x =user_type, y = user_count, fill = user_type))+
   geom_bar(stat = "identity")+
@@ -79,7 +79,7 @@ ggplot(user_distribution, aes(x =user_type, y = user_count, fill = user_type))+
 
 There are more members than casual riders.
 
-###Daily user distribution
+### Daily user distribution
 ```{r users by day}
 
 ggplot(weekly_trips, aes(x = trip_day, y = user_count, fill = trip_day))+
@@ -97,7 +97,7 @@ Most of the casual riders take trips on the weekends.This suggests that most cas
 
 
 
-###Bike preference
+### Bike preference
 ```{r bike type plot}
 
 ggplot(bike_preference, aes(x=bike_type, y = user_count, fill = bike_type))+
@@ -115,7 +115,7 @@ This shows that the most used bike type is the classic bike, which is the prefer
 The least common bike type is the docked bike which is only used by a small number of casual riders and not at all by members.
 
 
-###Time of trip
+### Time of trip
 ```{r trip time plot}
 ggplot(trip_time, aes(x= time_of_trip, y = user_count, fill = time_of_trip))+
   geom_bar(stat ="identity")+
